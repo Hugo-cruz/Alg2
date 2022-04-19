@@ -18,25 +18,30 @@ long getFileSize(FILE *arquivo){
     return fileSize;
 }
 
+void printStudent(struct Registro input){
+    printf("nUSP: %d\n",input.nUSP);
+    printf("Nome: %s\n",input.NomeCompleto);
+    printf("Curso: %s\n",input.Curso);
+    printf("Nota: %.2f",input.Nota);
+}
+
+
 void case1(char * nome_arquivo){
     FILE *arquivo;
     arquivo = fopen(nome_arquivo,"rb");
-
     struct Registro input;
-    
-
     if(arquivo == NULL){
         printf("deu ruim");
 
     }else{
         fseek(arquivo, 0, SEEK_SET);
+        fread(&input, sizeof(struct Registro), 1, arquivo);
+        printStudent(input);
         while(fread(&input, sizeof(struct Registro), 1, arquivo))
         {
-            printf ("\nnUSP: %d\nNome: %s\nCurso: %s\nNota: %.2f\n", input.nUSP,
-            input.NomeCompleto, input.Curso, input.Nota);
+            printf("\n\n");
+            printStudent(input);
         }
-        
- 
     // close file
     fclose (arquivo);
     }
@@ -45,21 +50,20 @@ void case1(char * nome_arquivo){
 void case2(char * nome_arquivo){
     FILE *arquivo;
     arquivo = fopen(nome_arquivo,"rb");
-
     struct Registro input;
-
     if(arquivo == NULL){
         printf("deu ruim");
-
     }else{
 
         long fileSize = getFileSize(arquivo);
         fseek(arquivo,0,SEEK_SET);
+        fread(&input, sizeof(struct Registro), 1, arquivo);
+        printStudent(input);
         while(ftell(arquivo) < fileSize/2)
         {
             fread(&input, sizeof(struct Registro), 1, arquivo);
-            printf ("\nnUSP: %d\nNome: %s\nCurso: %s\nNota: %.2f\n", input.nUSP,
-            input.NomeCompleto, input.Curso, input.Nota);
+            printf("\n\n");
+            printStudent(input);
         }
  
     // close file
@@ -80,10 +84,12 @@ void case3(char * nome_arquivo){
 
         long fileSize = getFileSize(arquivo);
         fseek(arquivo,fileSize/2,SEEK_SET);
+        fread(&input, sizeof(struct Registro), 1, arquivo);
+        printStudent(input);
         while(fread(&input, sizeof(struct Registro), 1, arquivo))
         {
-            printf ("\nnUSP: %d\nNome: %s\nCurso: %s\nNota: %.2f\n", input.nUSP,
-            input.NomeCompleto, input.Curso, input.Nota);
+            printf("\n\n");
+            printStudent(input);
         }
  
     // close file
@@ -107,11 +113,13 @@ void case4(char * nome_arquivo){
 
     }else{
         fseek(arquivo,(atoi(inicio)-1)*sizeof(struct Registro),SEEK_SET);
+        fread(&input, sizeof(struct Registro), 1, arquivo);
+        printStudent(input);
         while(ftell(arquivo) < atoi(fim)*sizeof(struct Registro))
         {
             fread(&input, sizeof(struct Registro), 1, arquivo);
-            printf ("\nnUSP: %d\nNome: %s\nCurso: %s\nNota: %.2f\n", input.nUSP,
-            input.NomeCompleto, input.Curso, input.Nota);
+            printf("\n\n");
+            printStudent(input);
         }
  
     // close file
@@ -134,8 +142,7 @@ void case5(char * nome_arquivo){
     }else{
         fseek(arquivo,(atoi(posicao)-1)*sizeof(struct Registro),SEEK_SET);
         fread(&input, sizeof(struct Registro), 1, arquivo);
-        printf ("\nnUSP: %d\nNome: %s\nCurso: %s\nNota: %.2f\n", input.nUSP,
-        input.NomeCompleto, input.Curso, input.Nota);
+        printStudent(input);
  
     // close file
     fclose (arquivo);
