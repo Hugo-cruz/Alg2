@@ -2,6 +2,14 @@
     "files.associations": {
         "__functional_03": "c",
         "functional": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "student.h": "c",
+        "filehandler.h": "c",
+        "__string": "cpp",
+        "iterator": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "__hash_table": "cpp"
     }
 }
