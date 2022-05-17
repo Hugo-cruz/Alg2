@@ -1,0 +1,1 @@
+rm student.dat && rm index.dat && clear && clear && make all && make run < 1.in

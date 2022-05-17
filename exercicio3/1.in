@@ -1,0 +1,15 @@
+insert 1,"Gabriel","Piruleta","Sistemas de Informacao",8.40
+insert 5,"Joy","Mark","Sistemas de Informacao",6.40
+insert 10,"Clara","Randal","Sistemas de Informacao",5.40
+insert 20,"Stanley","Tim","Sistemas de Informacao",8.60
+insert 25,"Jean","Christopher","Sistemas de Informacao",5.90
+insert 20,"Terri","Rachel","Sistemas de Informacao",9.90
+insert 122,"virgulino","ferreira","Sistemas de Informacao",9.90
+insert 45,"Terri","Rachel","Sistemas de Informacao",9.90
+insert 3,"Terri","Rachel","Sistemas de Informacao",9.90
+insert 88,"jery","seinfeld","Sistemas de Informacao",9.90
+insert 56,"hugo","cruz","Sistemas de Informacao",9.90
+insert 12,"virgulino","ferreira","Sistemas de Informacao",9.90
+insert 120,"virgulino","ferreira","Sistemas de Informacao",9.90
+search 1
+exit
