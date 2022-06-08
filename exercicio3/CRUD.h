@@ -16,6 +16,6 @@ int readCurrentInput(char *, int , char [], char[]);
 
 void insert(student_t);
 void search(int);
-void delete(int);
+void update(student_t);
 
 #endif

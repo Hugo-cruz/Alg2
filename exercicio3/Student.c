@@ -4,11 +4,11 @@
 
 void printStudentData(student_t student){
     printf("-------------------------------\n");
-    printf("USP number: %d\n",student.nUSP);
-    printf("Name: %s\n",student.Nome);
-    printf("Surname: %s\n",student.Sobrenome);
-    printf("Course: %s\n",student.Curso);
-    printf("Test grade: %.2f\n",student.Nota);
+    printf("nUSP: %d\n",student.nUSP);
+    printf("Nome: %s\n",student.Nome);
+    printf("Sobrenome: %s\n",student.Sobrenome);
+    printf("Curso: %s\n",student.Curso);
+    printf("Nota: %.2f\n",student.Nota);
     printf("-------------------------------\n");
 }
 

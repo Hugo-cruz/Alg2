@@ -31,6 +31,7 @@ long writeStudentToFile(char fileName[], student_t student) {
         printf("deu ruim");
         
     }
+    fseek(filePointer, 0, SEEK_END);
     long rrn = ftell(filePointer);
     fwrite(&student, sizeof(student_t), 1, filePointer);
     fclose(filePointer);

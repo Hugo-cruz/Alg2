@@ -11,27 +11,7 @@
 #define PAGESIZE 4096
 #define TREEHEADER PAGESIZE
 #define MAXKEYS 204
-#define AUX_FIELDS_SIZE_ON_PAGE (2+1)
-#define FREE_SPACE_ON_PAGE (PAGESIZE − ( (MAXKEYS*4 )+(MAXKEYS*8 ) +(( MAXKEYS+1)*8 ) +3) ) 
-#define ORDER 5
-
-typedef struct record {
-    int key;
-    long recordRRN;
-}record;
-
-typedef struct page {
-    record *records;
-    long *childs;
-    short numberOfKeys;
-    bool isLeaf;
-}page;
-
-typedef struct promoted_key_t {
-    int key;
-    long recordRRN;
-    long childs[2];
-}promoted_key_t;
+#define ORDER 204
 
 typedef struct node_t{
 	int nodeSize;
@@ -72,10 +52,15 @@ item_to_promote_t insertOnNotLeafWithOverflow(node_t*,int, FILE*, item_to_promot
 
 //Search
 bool checkExistOnBtree(int);
-int searchOnBtree(int);
+long searchOnBtree(int);
+student_t getStudentFromFile(long);
+
+//Update
+void updateOnFile(int,student_t);
 
 //helpers
 void printNode(node_t *);
+
 
 
 #endif 

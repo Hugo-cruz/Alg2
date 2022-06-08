@@ -31,16 +31,27 @@ void insert(student_t student){
 }
 
 void search(int nUSP){
-    if (checkExistOnBtree(nUSP))
+    if (!checkExistOnBtree(nUSP))
     {
-        printf("achou\n");
+        printf("Registro nao encontrado!\n");
     }else
     {
-        printf("n achou\n");
+        long rrn = searchOnBtree(nUSP);
+        student_t student = getStudentFromFile(rrn);
+        printStudentData(student);
     }
-    
-    
-    
+    return;
+}
+
+void update(student_t modifiedSudent){
+    if (!checkExistOnBtree(modifiedSudent.nUSP))
+    {
+        printf("Registro nao encontrado!\n");
+    }else
+    {
+        int rrn = searchOnBtree(modifiedSudent.nUSP);
+        updateOnFile(rrn,modifiedSudent);
+    }
     return;
 }
 
@@ -71,6 +82,23 @@ void parseLine(char line[]){
         lastDelimiterPosition = readCurrentInput(currentInput, lastDelimiterPosition,line,DELIMITERCSV);
         int nUSP = atoi(currentInput);
         search(nUSP);
+    }
+    if(strcmp(instruction,"update") == 0){
+        char currentInput[MAXLINESIZE];
+        student_t student;
+        lastDelimiterPosition = readCurrentInput(currentInput, lastDelimiterPosition,line,DELIMITERCSV);
+        student.nUSP = atoi(currentInput);
+        lastDelimiterPosition = readCurrentInput(currentInput, lastDelimiterPosition,line,DELIMITERCSV);
+        strcpy(student.Nome, currentInput);
+        lastDelimiterPosition = readCurrentInput(currentInput, lastDelimiterPosition,line,DELIMITERCSV);
+        strcpy(student.Sobrenome, currentInput);
+        lastDelimiterPosition = readCurrentInput(currentInput, lastDelimiterPosition,line,DELIMITERCSV);
+        strcpy(student.Curso, currentInput);
+        lastDelimiterPosition = readCurrentInput(currentInput, lastDelimiterPosition,line,DELIMITERCSV);
+        float nota = atof(currentInput);
+        student.Nota = (nota);
+
+        update(student);
     }
     if(strcmp(instruction,"exit") == 0){
         return;

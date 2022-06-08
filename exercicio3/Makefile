@@ -8,7 +8,7 @@ CRUD = CRUD.c
 
 #adicionar todos os .c que serão compilados ao lado do $(MAIN)
 all:
-	gcc -Wall -g $(MAIN) $(BTREE) $(STUDENT) $(HANDLER) $(CRUD) -o $(BINARY)
+	gcc -g $(MAIN) $(BTREE) $(STUDENT) $(HANDLER) $(CRUD) -o $(BINARY)
 
 run:
 	./$(BINARY)

@@ -1,7 +1,7 @@
 #include "btree.h"
 #include "FileHandler.h"
 
-
+//Function to debug the nodes
 void printNode(node_t *node){
 
 	printf("Keys\n");
@@ -19,18 +19,20 @@ void printNode(node_t *node){
 	printf("\n");
 }
 
+//Function to debug itens to promote in the overflow
 void printItemToPromote(item_to_promote_t itemToPromote){
 	printf("\nItem to promote\n");
 	printf("has value %i\n",itemToPromote.hasValue);
 	if (itemToPromote.hasValue)
 	{
-		printf("nusp : %ld\n", itemToPromote.keyToPromote);
-		printf("children %d and %d\n", itemToPromote.leftChildRRN, itemToPromote.rigthChildRRN);
+		printf("nusp : %d\n", itemToPromote.keyToPromote);
+		printf("children %ld and %ld\n", itemToPromote.leftChildRRN, itemToPromote.rigthChildRRN);
 	}
 	
 
 }
 
+//function to load header on memory
 header_t* loadBTreeHeader() {
 	FILE *indexFile= fopen(INDEXFILENAME, "r+");
 	header_t *header = (header_t *) malloc(sizeof(header_t));
@@ -53,6 +55,7 @@ header_t* loadBTreeHeader() {
 	return header;
 }
 
+//function to record the header on file
 void recordBTreeHeader(header_t *header, FILE *indexFile){
 	//Writing header to index file
 	fseek(indexFile, 0, SEEK_SET);
@@ -61,6 +64,7 @@ void recordBTreeHeader(header_t *header, FILE *indexFile){
 	return;
 }	
 
+//function to check if a student already exists on the btree
 bool checkExistOnBtree(int nUSP){
 	header_t *header = loadBTreeHeader();
 	int nodePosition = header->rootNodeRRN;
@@ -68,41 +72,34 @@ bool checkExistOnBtree(int nUSP){
 
 	FILE * filePointer = openFile(INDEXFILENAME,"r+b");
 
-	node_t *rootNode = (node_t *) malloc(sizeof(node_t));
-	fseek(filePointer, nodePosition, SEEK_SET);
-	fread(rootNode, sizeof(node_t), 1, filePointer);
-	
-	printf("procurando nusp %d\n", nUSP);
-	printf("começando pela raiz \n");
-	printNode(rootNode);
 	while(nodePosition != -1){
 		node_t *iterativeNode = (node_t *) malloc(sizeof(node_t));
 		fseek(filePointer, nodePosition, SEEK_SET);
 		fread(iterativeNode, sizeof(node_t), 1, filePointer);
 
 		//if its not a leaf
-		printf("procurando %d em \n", nUSP);
-		printNode(iterativeNode);
 		if (iterativeNode->keyVector[0] > nUSP)
 		{
 			nodePosition = iterativeNode->childrenVector[0];
 		}else
 		{
+			//its a leaf
 			for(int i=header->order-2;i>=0;i--){
 				if (iterativeNode->keyVector[i] == nUSP)
 				{
-					//printf("True\n");
+					free(iterativeNode);
+					fclose(filePointer);
 					return true;
-				}				
+				}
+				//iterate through vector to check the correct child to proceed				
 				if(iterativeNode->keyVector[i] != -1 && (iterativeNode->keyVector[i] < nUSP)){
 					nodePosition = iterativeNode->childrenVector[i+1];
 					break;
 				}
 			}
 		}
-		printf("next node %d\n", nodePosition);
+		free(iterativeNode);
 	}
-	//printf("False\n");
 	fclose(filePointer);
 	return false;
 }	
@@ -150,8 +147,6 @@ void caseRootIsLeafWithoutOveflow(node_t *rootNode, FILE* filePointer, int nUSP,
 	rootNode->keyVector[i] = tempNUSP;
 	rootNode->dataRrnVector[i] = tempData;
 	rootNode->nodeSize++;
-	//printf("raiz vazia\n");
-	//printNode(rootNode);
 
 	fseek(filePointer, header->rootNodeRRN, SEEK_SET);
 	fwrite(rootNode, sizeof(node_t), 1, filePointer);
@@ -298,9 +293,9 @@ item_to_promote_t insertOnLeafWithOveflow(node_t *iterativeNode, FILE* filePoint
 	//utils to promote 
 	item_to_promote_t itemToPromote;
 
-	printf("\ninserir nusp COM OVERFLOW %d\n",nUSP);
-	printf("node b4\n");
-	printNode(iterativeNode);
+	//printf("\ninserir nusp COM OVERFLOW %d\n",nUSP);
+	//printf("node b4\n");
+	//printNode(iterativeNode);
 
 	//Solução: insere ordenado e sobe a chave da metade (apos ordena-la) para a raiz
 	//Ordenando os ponteiros
@@ -342,9 +337,9 @@ item_to_promote_t insertOnLeafWithOveflow(node_t *iterativeNode, FILE* filePoint
 
 
 	
-	printf("node after COM OVERFLOW\n");
-	printNode(iterativeNode);
-	printf("item to promot \n");
+	// printf("node after COM OVERFLOW\n");
+	// printNode(iterativeNode);
+	// printf("item to promot \n");
 	
 
 
@@ -363,11 +358,11 @@ item_to_promote_t insertOnLeafWithOveflow(node_t *iterativeNode, FILE* filePoint
 	// printNode(lowChild);
 	// printf("High \n");
 	// printNode(highChild);
-	// free(highChild);
-	// free(lowChild);
+	free(highChild);
+	free(lowChild);
 
 	itemToPromote.hasValue = true;
-	printItemToPromote(itemToPromote);
+	// printItemToPromote(itemToPromote);
 	return itemToPromote;
 }
 
@@ -387,9 +382,9 @@ item_to_promote_t insertOnNotLeafWithoutOverflow(node_t *iterativeNode, int node
 	bool found = false;
 	int lastPosition = 0;
 	
-	printf("\ninserir nusp %d\n",nUSP);
-	printf("node b4\n");
-	printNode(iterativeNode);
+	// printf("\ninserir nusp %d\n",nUSP);
+	// printf("node b4\n");
+	// printNode(iterativeNode);
 
 	for (int i=0;i<ORDER-1;i++)
 	{
@@ -427,8 +422,8 @@ item_to_promote_t insertOnNotLeafWithoutOverflow(node_t *iterativeNode, int node
 		iterativeNode->childrenVector[lastPosition+1] = rigthChildRRN;
 
 	}
-	printf("node after\n");
-	printNode(iterativeNode);
+	// printf("node after\n");
+	// printNode(iterativeNode);
 	
 	fseek(filePointer, nodePosition, SEEK_SET);
 	fwrite(iterativeNode, sizeof(node_t), 1, filePointer);
@@ -456,8 +451,6 @@ item_to_promote_t insertOnNotLeafWithOverflow(node_t *iterativeNode, int nodePos
 	int metade = (ORDER)/2;
 
 	//Variável para caso já tenha achado no vetor
-	bool found = false;
-	int positionToinsert = ORDER-1;
 
 	int nUSP = itemToPromote.keyToPromote;
 	int rrn = itemToPromote.rrnToPromote;
@@ -469,9 +462,6 @@ item_to_promote_t insertOnNotLeafWithOverflow(node_t *iterativeNode, int nodePos
 
 	int tempNUSP;
 	int tempRRN;
-
-	bool alreadyFound = false;
-	//int positionToinsert = ORDER-1;
 
 	for (int i=0;i<ORDER-1;i++)
 	{
@@ -494,7 +484,6 @@ item_to_promote_t insertOnNotLeafWithOverflow(node_t *iterativeNode, int nodePos
 			leftChildRRN = rigthChildRRN;
 			rigthChildRRN = tempRigthChildRRN;
 
-			alreadyFound = true;
 		}else
 		{
 			helperVectornUSP[i] = iterativeNode->keyVector[i];
@@ -588,18 +577,18 @@ item_to_promote_t insertOnTreeWithOverflowHandler(int nodePosition, FILE* filePo
 		}
 		if (itemToPromote.hasValue)
 		{
-			printf("pariu inserir fora da folha\n");
+			// printf("pariu inserir fora da folha\n");
 			//If theres no overflow
 			if (iterativeNode->nodeSize<header->order-1)
 			{
-				printf("Inserir fora na folha SEM overflow\n");
+				// printf("Inserir fora na folha SEM overflow\n");
 				itemToPromote = insertOnNotLeafWithoutOverflow(iterativeNode, nodePosition, filePointer,itemToPromote,header);
 				return itemToPromote;
 			}else
 			{
-				printf("Inserir fora na folha COM overflow\n");
+				// printf("Inserir fora na folha COM overflow\n");
 				itemToPromote = insertOnNotLeafWithOverflow(iterativeNode, nodePosition, filePointer,itemToPromote,header);
-				printf("Overflow\n");
+				// printf("Overflow\n");
 				printItemToPromote(itemToPromote);
 				return itemToPromote;
 			}
@@ -613,14 +602,14 @@ item_to_promote_t insertOnTreeWithOverflowHandler(int nodePosition, FILE* filePo
 	//If its a leaf
 	}else{
 		if (iterativeNode->nodeSize < header->order-1) {
-			printf("Inserindo num no folha sem overflow\n");
+			// printf("Inserindo num no folha sem overflow\n");
 			insertOnLeafWithoutOveflow(iterativeNode,filePointer,nUSP,rrn,header,nodePosition);
 			itemToPromote.hasValue = false;
 			return itemToPromote;
 		}else{
-			printf("Inserindo num no folha com overflow\n");
+			// printf("Inserindo num no folha com overflow\n");
 			item_to_promote_t itemToPromote = insertOnLeafWithOveflow(iterativeNode,filePointer, nUSP, rrn,header);
-			printItemToPromote(itemToPromote);
+			// printItemToPromote(itemToPromote);
 			return itemToPromote;
 		}
 		
@@ -658,6 +647,7 @@ void moreThanOneLeaf(node_t *rootNode, FILE* filePointer, student_t student, lon
 		fseek(filePointer, 0, SEEK_SET);
 		fwrite(header, sizeof(header_t), 1, filePointer);
 		free(newRoot);
+
 
 	}
 	
@@ -717,7 +707,10 @@ void insertStudentOnTree(student_t student){
 		free(header);
 		fclose(studentFile);
 		fclose(indexFile);
+	}else{
+		printf("O Registro ja existe!\n");
 	}
+	
 	
 	
 	
@@ -741,3 +734,82 @@ node_t * createNewNode(header_t *header){
 
 	return newNode;
 }	
+
+long searchOnBtree(int nUSP){
+	header_t *header = loadBTreeHeader();
+	int nodePosition = header->rootNodeRRN;
+
+	FILE * filePointer = openFile(INDEXFILENAME,"r+b");
+
+	// node_t *rootNode = (node_t *) malloc(sizeof(node_t));
+	// fseek(filePointer, nodePosition, SEEK_SET);
+	// fread(rootNode, sizeof(node_t), 1, filePointer);
+	
+	// printf("procurando nusp %d\n", nUSP);
+	// printf("começando pela raiz \n");
+	// printNode(rootNode);
+	student_t student;
+	while(nodePosition != -1){
+		node_t *iterativeNode = (node_t *) malloc(sizeof(node_t));
+		fseek(filePointer, nodePosition, SEEK_SET);
+		fread(iterativeNode, sizeof(node_t), 1, filePointer);
+
+		//if its not a leaf
+		//printf("procurando %d em \n", nUSP);
+		//printNode(iterativeNode);
+		if (iterativeNode->keyVector[0] > nUSP)
+		{
+			nodePosition = iterativeNode->childrenVector[0];
+		}else
+		{
+			for(int i=header->order-2;i>=0;i--){
+				if (iterativeNode->keyVector[i] == nUSP)
+				{
+					//printf("True\n");
+					
+					long rrn = iterativeNode->dataRrnVector[i];
+					//printNode(iterativeNode);
+					
+					// printf("RRN na funcao %ld\n", rrn);
+					// printf("RRN no vetor %ld\n", iterativeNode->dataRrnVector[i]);
+					// printf("nUSP na funcao %ld\n", iterativeNode->keyVector[i]);
+					fclose(filePointer);
+					free(iterativeNode);
+					return rrn;
+					
+				}				
+				if(iterativeNode->keyVector[i] != -1 && (iterativeNode->keyVector[i] < nUSP)){
+					nodePosition = iterativeNode->childrenVector[i+1];
+					break;
+				}
+			}
+		}
+		//printf("next node %d\n", nodePosition);
+		free(iterativeNode);
+	}
+	//printf("False\n");
+	free(header);
+	//free(rootNode);
+	fclose(filePointer);
+	return -1;
+}
+
+student_t getStudentFromFile(long rrn){
+	FILE * filePointer = openFile(STUDENTDATABASEFILENAME,"r+b");
+	
+	student_t student;
+	fseek(filePointer, rrn, SEEK_SET);
+	fread(&student, sizeof(student_t), 1, filePointer);
+
+	fclose(filePointer);
+	return student;
+}
+
+void updateOnFile(int rrn, student_t modifiedStudent){
+	FILE * filePointer = openFile(STUDENTDATABASEFILENAME,"r+b");
+	
+	fseek(filePointer, rrn, SEEK_SET);
+	fwrite(&modifiedStudent, sizeof(student_t), 1, filePointer);
+
+	fclose(filePointer);
+}
