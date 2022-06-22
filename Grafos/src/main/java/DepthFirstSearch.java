@@ -34,10 +34,7 @@ public class DepthFirstSearch {
                 edge++;
                 nextVertex = graph.getNextConnectedVertexIndex(nodeIndex,edge);
             }
-            //Integer nextItemToVisit = itensToVisit.pop();
         }
-
-
         return;
     }
 
