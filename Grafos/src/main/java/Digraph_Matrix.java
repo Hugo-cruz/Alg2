@@ -18,11 +18,12 @@ public class Digraph_Matrix extends AbstractGraph
     public Digraph_Matrix(List<Vertex> vertices)
     {
         super(vertices);
-        initializeAdjacencyMatrix();
+        initializeAdjacencyMatrix(vertices.size());
     }
 
-    private void initializeAdjacencyMatrix()
+    private void initializeAdjacencyMatrix(Integer Nv)
     {
+        numberOfVertices = Nv;
         adjacencyMatrix = new Edge[numberOfVertices][numberOfVertices];
         for (int i = 0; i < numberOfVertices; i++)
         {
@@ -33,15 +34,31 @@ public class Digraph_Matrix extends AbstractGraph
         }
     }
 
+    private int getIndex(Vertex vertex){
+        return vertices.indexOf(vertex);
+    }
+
     @Override
     public void addVertex(Vertex vertex)
     {
-
+        vertices.add(vertex);
+        numberOfVertices++;
     }
 
     @Override
     public void removeVertex(Vertex vertex)
     {
+        Integer sourceIndex = getIndex(vertex);
+        vertices.remove(vertex);
+
+
+        for(int i=sourceIndex;i<numberOfVertices;i++){
+            for(int j=0;j<numberOfVertices;j++){
+                adjacencyMatrix[i][j] = adjacencyMatrix[i+1][j];
+            }
+        }
+        numberOfVertices--;
+
 
     }
 
@@ -138,11 +155,11 @@ public class Digraph_Matrix extends AbstractGraph
     {
         AbstractGraph g = new Digraph_Matrix(new ArrayList<>()
         {{
-            add(new Vertex("Joao"));
-            add(new Vertex("Maria"));
-            add(new Vertex("José"));
-            add(new Vertex("Marcos"));
-            add(new Vertex("Pedro"));
+            add(new Vertex("Joao", "teste"));
+            add(new Vertex("Maria","teste"));
+            add(new Vertex("José","teste"));
+            add(new Vertex("Marcos","teste"));
+            add(new Vertex("Pedro","teste"));
         }});
 
         g.addEdge(0, 1);

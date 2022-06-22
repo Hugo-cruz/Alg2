@@ -26,11 +26,11 @@ public class Graph_Matrix extends Digraph_Matrix
     {
         AbstractGraph g = new Graph_Matrix(new ArrayList<>()
         {{
-            add(new Vertex("Joao"));
-            add(new Vertex("Maria"));
-            add(new Vertex("José"));
-            add(new Vertex("Marcos"));
-            add(new Vertex("Pedro"));
+            add(new Vertex("Joao","teste"));
+            add(new Vertex("Maria","teste"));
+            add(new Vertex("José","teste"));
+            add(new Vertex("Marcos","teste"));
+            add(new Vertex("Pedro","teste"));
         }});
 
         g.addEdge(0, 1);

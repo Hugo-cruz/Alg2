@@ -10,4 +10,8 @@ public abstract class AbstractGraph implements GraphInterface
         numberOfVertices = vertices.size();
         this.vertices = vertices;
     }
+
+    public int getNumberOfVertices() {
+        return numberOfVertices;
+    }
 }
